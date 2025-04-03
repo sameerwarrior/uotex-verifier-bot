@@ -1,14 +1,12 @@
 import logging
+import asyncio
 from telethon import TelegramClient, events
+from telethon.sessions import StringSession
 from telegram import Update, Bot
 from telegram.ext import ApplicationBuilder, ContextTypes, MessageHandler, filters
 from flask import Flask
 from threading import Thread
-import asyncio
 import nest_asyncio
-
-# Apply patch for Replit async
-nest_asyncio.apply()
 
 # === CONFIGURATION ===
 api_id = 21603561
@@ -17,6 +15,12 @@ bot_token = '6847262494:AAEgfjf7YDav02q17Jjb7Zl75h-RHeKT-ho'
 quotex_bot_username = 'QuotexPartnerBot'
 private_channel_invite = 'https://t.me/+ro00SU8yukw1MDRl'
 bypass_trader_id = '2003'
+
+# ✅ Your Telegram session string
+SESSION_STRING = "1BVtsOLABu7DqUKmAxDwS_Q2tAMfOV3ASsBQgr5HaHSNGv-h97A7fWTXFrvhiBdPTX1mkIDWc1_mKJkSy20v6217VVPHLfWSwRn2IKDiAloqpWJBGvMiQAFMnRb5ektMhXYmp34xUHbkOzZiYp_HLCblqWq7yByhOnV39zOgP3SryiRZeuaz8hfQQoxObFa0hzBhO1aH_h1g6_5W2jmiJCN8OUtw0CVQMXn6R-2r4szLXIYPOdN8T2R80EZvB2VzrSf4Nt3JLUrnr7LUXYHdwbDxhV894e4y6eZiJOOpOxASumDk1u1ppSMFqJ0vwE_EcCXJWIBl5iHIWWbdedO4gYrRFTPYNfuI="
+
+# === Apply async patch for Replit or Railway ===
+nest_asyncio.apply()
 
 # === Logging Setup ===
 logging.basicConfig(level=logging.INFO)
@@ -33,15 +37,7 @@ def run_flask():
 Thread(target=run_flask).start()
 
 # === Telethon Client for Your Personal Account ===
-from telethon.sessions import StringSession
-
-SESSION_STRING = "1BVtsOLABu7DqUKmAxDwS_Q2tAMfOV3ASsBQGr5HaHSNGv-h97A7fWTXFrvhiBdPTX1mkIDWc1_mKJkSy20v6217VVPHLfWSwRn2IKDiAloqpWJBGvMiQAFMnRb5ektMhXYmp34xUHbkOzZiYp_HLCblqWq7yByhOnV39zOgP3SryiRZeuaz8hfQQoxObFa0hzBhO1aH_h1g6_5W2jmiJCN8OUtw0CVQMXn6R-2r4szLXIYPOdN8T2R80EZvB2VzrSf4Nt3JLUrnr7LUXYHdwbDxhV894e4y6eZiJOOpOxASumDk1u1ppSMFqJ0vwE_EcCXJWIBl5iHIWWbdedO4gYrRFTPYNfuI="
-client = TelegramClient(StringSession("""1BVtsOLABu7DqUKmAxDwS_Q2tAMfOV3ASsBQgr5HaHSNGv-h97A7fWTXFrvhiBdPTX1mkIDWc1_mKJkSy20v6217VVPHLfWSwRn2IKDiAloqpWJBGvMiQAFMnRb5ektMhXYmp34xUHbkOzZiYp_HLCblqWq7yByhOnV39zOgP3SryiRZeuaz8hfQQoxObFa0hzBhO1aH_h1g6_5W2jmiJCN8OUtw0CVQMXn6R-2r4szLXIYPOdN8T2R80EZvB2VzrSf4Nt3JLUrnr7LUXYHdwbDxhV894e4y6eZiJOOpOxASumDk1u1ppSMFqJ0vwE_EcCXJWIBl5iHIWWbdedO4gYrRFTPYNfuI="""),
-    api_id,
-    api_hash)
-
-await client.start()
-
+client = TelegramClient(StringSession(SESSION_STRING), api_id, api_hash)
 
 # === Telegram Bot Client ===
 bot = Bot(token=bot_token)
@@ -103,7 +99,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     else:
         await context.bot.send_message(chat_id, f"❌ Verification failed: {msg}")
 
-
+# === Main Bot Execution ===
 async def main():
     logging.info("Starting Telegram user session...")
     await client.start()
@@ -112,4 +108,5 @@ async def main():
     logging.info("Bot is running...")
     await application.run_polling()
 
+# === Run the Bot ===
 asyncio.run(main())
