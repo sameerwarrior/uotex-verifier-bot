@@ -33,7 +33,12 @@ def run_flask():
 Thread(target=run_flask).start()
 
 # === Telethon Client for Your Personal Account ===
-client = TelegramClient('session_user', api_id, api_hash)
+from telethon.sessions import StringSession
+
+SESSION_STRING = 1BVtsOLABu7DqUKmAxDwS_Q2tAMfOV3ASsBQGr5HaHSNGv-h97A7fWTXFrvhiBdPTX1mkIDWc1_mKJkSy20v6217VVPHLfWSwRn2IKDiAloqpWJBGvMiQAFMnRb5ektMhXYmp34xUHbkOzZiYp_HLCblqWq7yByhOnV39zOgP3SryiRZeuaz8hfQQoxObFa0hzBhO1aH_h1g6_5W2jmiJCN8OUtw0CVQMXn6R-2r4szLXIYPOdN8T2R80EZvB2VzrSf4Nt3JLUrnr7LUXYHdwbDxhV894e4y6eZiJOOpOxASumDk1u1ppSMFqJ0vwE_EcCXJWIBl5iHIWWbdedO4gYrRFTPYNfuI=
+client = TelegramClient(StringSession(SESSION_STRING), api_id, api_hash)
+await client.start()
+
 
 # === Telegram Bot Client ===
 bot = Bot(token=bot_token)
